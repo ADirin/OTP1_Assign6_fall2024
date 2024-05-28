@@ -28,7 +28,7 @@ pipeline {
                     docker.image('unittest-image').inside('-v C:/Users/amirdi/.jenkins/workspace/assignment6:/workspace -w /workspace') {
                         // Commands to run inside the Docker container
                         sh 'ls'
-                        sh 'java -jar target/testimage.jar'
+                        sh 'java -jar /workspace/target/testimage.jar'
                     }
                 }
             }
