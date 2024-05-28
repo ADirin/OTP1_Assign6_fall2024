@@ -1,8 +1,7 @@
 pipeline {
     agent any
-
     stages {
-        stage('Checkout') {
+        stage('Checkout SCM') {
             steps {
                 checkout scm
             }
@@ -15,16 +14,17 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def dockerImage = docker.build("unittest-image")
+                    def app = docker.build("unittest-image")
                 }
             }
         }
         stage('Run Docker Container') {
             steps {
                 script {
-                    def dockerImage = docker.image("unittest-image")
-                    dockerImage.inside {
-                        bat 'java -jar /app/testimage.jar'
+                    def workspaceUnixPath = "${env.WORKSPACE}".replaceAll('\\\\', '/')
+                    def app = docker.image("unittest-image")
+                    app.inside("-w ${workspaceUnixPath} -v ${workspaceUnixPath}:${workspaceUnixPath} -v ${workspaceUnixPath}@tmp:${workspaceUnixPath}@tmp") {
+                        bat 'cmd.exe'
                     }
                 }
             }
