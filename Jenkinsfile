@@ -9,21 +9,22 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'mvn clean package'
+                bat 'mvn clean package'
             }
         }
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("unittest-image")
+                    def dockerImage = docker.build("unittest-image")
                 }
             }
         }
         stage('Run Docker Container') {
             steps {
                 script {
-                    docker.image("unittest-image").inside {
-                        sh 'java -jar /app/testimage.jar'
+                    def dockerImage = docker.image("unittest-image")
+                    dockerImage.inside {
+                        bat 'java -jar /app/testimage.jar'
                     }
                 }
             }
