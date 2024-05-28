@@ -25,7 +25,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    docker.image('unittest-image').inside('-w /app') {
+                    docker.image('unittest-image').inside('-v C:/Users/amirdi/.jenkins/workspace/assignment6:/workspace -w /workspace') {
                         // Commands to run inside the Docker container
                         sh 'ls'
                         sh 'java -jar target/testimage.jar'
