@@ -2,20 +2,31 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Build') {
             steps {
-                dir('C:\\Users\\amirdi\\IdeaProjects\\UnitTest') {
-                    bat 'mvn compile' // Compile source code using Maven
+                sh 'mvn clean package'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("unittest-image")
                 }
             }
         }
-        stage('Test') {
+        stage('Run Docker Container') {
             steps {
-                dir('C:\\Users\\amirdi\\IdeaProjects\\UnitTest') {
-                    bat 'mvn test' // Run tests using Maven
+                script {
+                    docker.image("unittest-image").inside {
+                        sh 'java -jar /app/testimage.jar'
+                    }
                 }
             }
         }
     }
 }
-
