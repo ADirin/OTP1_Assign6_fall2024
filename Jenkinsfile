@@ -14,16 +14,14 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def app = docker.build("unittest-image")
+                    docker.build('unittest-image')
                 }
             }
         }
         stage('Run Docker Container') {
             steps {
                 script {
-                    def workspaceUnixPath = "${env.WORKSPACE}".replaceAll('\\\\', '/')
-                    def app = docker.image("unittest-image")
-                    app.inside("-w ${workspaceUnixPath} -v ${workspaceUnixPath}:${workspaceUnixPath} -v ${workspaceUnixPath}@tmp:${workspaceUnixPath}@tmp") {
+                    docker.image('unittest-image').inside('-v $WORKSPACE:$WORKSPACE -w $WORKSPACE') {
                         bat 'cmd.exe'
                     }
                 }
